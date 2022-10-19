@@ -7,7 +7,7 @@ mongoose.connect(MONGO_URI, {
     useUnifiedTopology: true,
     dbName: 'Solo-Project'
 })
-.then(() => console.log('successfully connected to db'))
+.then(() => console.log('Successfully connected to database'))
 .catch((err) => console.log('Failed to connect: ', err));
 
 const userSchema = new mongoose.Schema({
@@ -16,5 +16,8 @@ const userSchema = new mongoose.Schema({
     password: String
 })
 
-module.exports = mongoose.model("Users", userSchema);
+const User = mongoose.model("Users", userSchema);
 
+module.exports = {
+    User
+}
