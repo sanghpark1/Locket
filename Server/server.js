@@ -2,7 +2,8 @@ const express = require('express');
 const app = express();
 const port = 3000;
 const userRouter = require('./routes/users');
-const User = require('./models/userModel');
+const entryRouter = require('./routes/entries')
+const User = require('./models/allModel');
 
 /**
  * handle parsing request body
@@ -10,10 +11,27 @@ const User = require('./models/userModel');
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 // above is necessary or req.body will come back undefined
+// although, not really sure about the second line there, but def the first one
 
 // route handlers below:
 
-app.use("/userlist", userRouter);
+app.use("/user", userRouter);
+
+app.use("/entry", entryRouter);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

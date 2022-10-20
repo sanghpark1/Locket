@@ -16,11 +16,11 @@ module.exports = {
       publicPath: '/',
     },
     proxy: {
-      '/userlist/**': {
+      '/user/**': {
         target: 'http://localhost:3000/',
         secure: false,
       },
-      '/assets/**': {
+      '/entry/**': {
         target: 'http://localhost:3000',
         secure: false,
       },
