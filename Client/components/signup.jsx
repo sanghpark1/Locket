@@ -30,6 +30,7 @@ const Signup = () => {
         .then((res) => res.json())
         .then((data) => {
           console.log(data);
+          alert('Account created! Go back to Login');
         })
         .catch((err) => console.log("Error in signup.jsx form submission", err));
     }
@@ -46,6 +47,7 @@ const Signup = () => {
       <header>
        <h1>Sign Up</h1>
       </header>
+      <div className="box">
         <form onSubmit={postUser} >
             <span>Username: </span>
             <input ref={usernameRef} type='text' name='username' /><br/>
@@ -58,8 +60,9 @@ const Signup = () => {
             <button>Create Account</button>
         </form>
         <Link to="/">
-        <button>Take Me Back To Login!</button>
+        <button className='backToLogin'>Take Me Back To Login!</button>
       </Link>
+      </div>
     </div>
   )
 }

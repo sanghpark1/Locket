@@ -8,40 +8,63 @@ body {
 }
 
 .login {
-    // background-color: white;
     display: grid;
     justify-content: center;
+    padding-top: 150px;
     text-align: center;
 
+    span {
+        font-size: 14px;
+    }
 
     .box {
             background-color: white;
+            width: 300px;
             border: 1px solid black;
+            border-radius: 5px;
             display: grid;
             justify-content: center;
         }
 
     form {
-        margin-top: 20%;
+        margin-top: 20px;
 
         input {
-            margin: 1px 5px;
+            margin: 0;
             display: grid;
             grid-template-rows: 1fr 1fr;
             justify-content: right;
             text-align: center;
+            font-size: 12px;
+            width: 160px;
         }
 
         button {
-            margin: 5px;
+            margin: 0;
             width: 100px;
             height: 20px;
             font-size: 12px;
+            border-radius: 3px;
         }
     }
     
     button {
         margin: 10px;
+        background-color: rgb(254, 249, 88);
+        border: 1px solid rgb(135, 135, 135);
+    }
+
+    .noAccount {
+        font-size: 12px;
+        color: rgb(69, 69, 69);
+        margin: 10px 0 0 0;
+    }
+
+    a {
+      text-decoration: none;
+      font-size: 13px;  
+      margin-bottom: 5px;
+      color: rgb(8, 91, 173);
     }
 }
 
@@ -49,25 +72,48 @@ body {
     // background-color: yellow;
     display: grid;
     justify-content: center;
+    padding-top: 150px;
     text-align: center;
+
+    span {
+        font-size: 14px;
+    }
+
+    .box{
+        background-color: white;
+            width: 300px;
+            border: 1px solid black;
+            border-radius: 5px;
+            display: grid;
+            justify-content: center;
+    }
 
     form {
         margin-top: 20%;
-        border: 1px solid red;
 
         input {
-            margin: 1px 5px;
+            margin: 0;
             display: grid;
             grid-template-rows: 1fr 1fr;
             justify-content: right;
-        }
-
-        button {
-            margin: 5px;
-            width: 100px;
-            height: 20px;
+            text-align: center;
             font-size: 12px;
+            width: 160px;
         }
+    }
+
+    button {
+        width: 100px;
+        height: 20px;
+        font-size: 12px;
+        border-radius: 3px;
+        margin: 10px;
+        background-color: rgb(254, 249, 88);
+        border: 1px solid rgb(135, 135, 135);
+    }
+
+    .backToLogin {
+        width: 150px;
     }
 }
 
@@ -77,16 +123,27 @@ body {
     justify-content: center;
     text-align: center;
     height: 100%;
+    background-color: rgb(187, 239, 255); 
+
+    .font-light-gray {
+        color: rgb(90, 88, 88);
+        font-size: 13px;
+    }
+
+    .main-box {
+        background-color: rgb(249, 249, 249);
+        border: 1px solid black;
+        padding-top: 20px;
+        margin-bottom: 20px;
+    }
 
     .left-side {
-        background-color: rgb(255, 255, 170);
         float: left;
         width: 35%;
         max-width: 60px;
     }
 
     .right-side {
-        background-color: rgb(255, 255, 170);
         justify-self: right;
         width: 60%;
     }
@@ -98,11 +155,8 @@ body {
 
     .main {
         // border: 1px solid red;
-        // display: grid;
-        // justify-content: center;
-        // align-items: center;
         header {
-            padding: 100px 50px 80px 50px;
+            padding: 100px 50px 50px 50px;
         }
         .textbox { // gotta fix the adjustability of the box; readjusts to anysize
             margin: 20px;
@@ -116,9 +170,13 @@ body {
         }
         
         button {
-            margin: 5px;
-            width: 150px;
-            height: 35px;
+            margin: 10px;
+        background-color: rgb(254, 249, 88);
+        border: 1px solid rgb(135, 135, 135);
+        width: 120px;
+            height: 23px;
+            font-size: 10px;
+            border-radius: 3px;
         }
     }
 }

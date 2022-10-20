@@ -47,6 +47,10 @@ userController.bcryptPassword = async (req, res, next) => {
 }
 
 userController.loginUser = async (req, res, next) => {
+    if (res.locals.getUser === null) {
+        res.locals.yayOrNay = false;
+        return next();
+    }
     try {
        
         if (await bcrypt.compare(req.body.password, res.locals.getPassword)) {

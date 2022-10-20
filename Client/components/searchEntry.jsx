@@ -37,7 +37,7 @@ const SearchEntry = () => {
     .then(res => res.json())
     .then(data => {
       const cache = [];
-      for (let i = 0; i < data.length; i++) {
+      for (let i = data.length -1 ; i >= 0; i--) {
         totalJournals.push(<option value={data[i].date}>{data[i].date}</option>)
       }
       setState((prevState) => {
@@ -197,14 +197,15 @@ const SearchEntry = () => {
             <header>
               <h1>Edit!</h1>
             </header>
-            <span>Incognito Mode: </span>
+            <div className="main-box">
+            <span className='font-light-gray'>Incognito Mode: </span>
             <input
               className="checkbox"
               type="checkbox"
               onChange={incognitoToggle}
             />
             <br />
-            <span>Show Last Sentence: </span>
+            <span className='font-light-gray'>Show Last Sentence: </span>
             <input
               className="checkbox"
               type="checkbox"
@@ -226,6 +227,7 @@ const SearchEntry = () => {
                 onChange={updateText}
               />
             )}
+            </div>
             <div>
               <button onClick={updateEntry}>Update This Entry</button>
               <Link to="/searchEntry" reloadDocument>

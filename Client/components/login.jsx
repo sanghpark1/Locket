@@ -71,6 +71,11 @@ const Login = () => {
         .then((res) => res.json())
         .then((data) => {
           data.logAttempt === 'success' ? loginSuccess(data) : null;
+          const whichResponse = Math.random() * 2;
+          if (data === false) {
+            if (whichResponse >= 1) alert('Account deleted.');
+            else alert('Incorrect Username or Password.')
+          }
         })
         .catch((err) => console.log("Error in login.jsx form submission", err));
     }
@@ -123,6 +128,7 @@ const Login = () => {
         })
         .catch((err) => console.log("Error in login.jsx journal entry submission", err));
     clearText();
+    alert('Submitted!')
   }
 
   const incognitoToggle = () => {
@@ -175,68 +181,79 @@ const Login = () => {
 
   return (
     <div>
-      { loggedIn ?
-      <div className="homepage">
-        <div className="left-side">
-          <button onClick={logOut}>Log Out</button>
-        </div>
-
-        <div className="main">
-          <header>
-            <h1>Write!</h1>
-          </header>
-          <span>Incognito Mode: </span><input className='checkbox' type='checkbox' onChange={incognitoToggle} />
-          <br />
-          <span>Show Last Sentence: </span><input className='checkbox' type='checkbox' onChange={lastSentenceToggle} />
-          <br/>
-          {
-            state.showLast ?
-            <input type='text' className='showLast' value={lastSentence} />
-            :
-            null
-          }
-          <br />
-          { state.incognito ?
-           <input className='textbox' type="password" onChange={updateText} />
-           :
-           <input className='textbox' type="text" onChange={updateText} />
-           }
-          <div>
-            <button onClick={submitEntry}>Submit Today's Entry</button>
-            <button onClick={clearText}>Clear Entry</button>
+      {loggedIn ? (
+        <div className="homepage">
+          <div className="left-side">
+            <button onClick={logOut}>Log Out</button>
           </div>
-          <br/>
-          <Link to="/searchEntry">
-          <button>Search Other Entries</button>
-        </Link>
-        </div>
 
-        <div className="right-side"></div>
-      </div>
-      :
+          <div className="main">
+            <header>
+              <h1>Write!</h1>
+            </header>
+            <div className="main-box">
+              <span className='font-light-gray'>Incognito Mode: </span>
+              <input
+                className="checkbox"
+                type="checkbox"
+                onChange={incognitoToggle}
+              />
+              <br />
+              <span className='font-light-gray'>Show Last Sentence: </span>
+              <input
+                className="checkbox"
+                type="checkbox"
+                onChange={lastSentenceToggle}
+              />
+              <br />
+              {state.showLast ? (
+                <input type="text" className="showLast" value={lastSentence} />
+              ) : null}
+              <br />
+              {state.incognito ? (
+                <input
+                  className="textbox"
+                  type="password"
+                  onChange={updateText}
+                />
+              ) : (
+                <input className="textbox" type="text" onChange={updateText} />
+              )}
+            </div>
+            <div>
+              <button onClick={submitEntry}>Submit Today's Entry</button>
+              <button onClick={clearText}>Clear Entry</button>
+            </div>
+            <Link to="/searchEntry">
+              <button>Search Other Entries</button>
+            </Link>
+          </div>
 
-      /* -----------------------!!! LOGIN PAGE !!!----------------------------------------------- */
-      <div className="login">
-        <header>
-          <h1>Log In</h1>
-        </header>
-        <div className="box">
-        <form onSubmit={loginUser}>
-          <span>Username: </span>
-          <input ref={usernameRef} type="text" />
-          <br />
-          <span>Password: </span>
-          <input ref={passwordRef} type="password" />
-          <br />
-          <button>Sign In</button>
-        </form>
-        <span>Don't have an account?</span>
-        <Link to="/signup">
-          <a>Sign Up</a>
-        </Link>
+          <div className="right-side"></div>
         </div>
-      </div>
-      } 
+      ) : (
+        /* -----------------------!!! LOGIN PAGE !!!----------------------------------------------- */
+        <div className="login">
+          <header>
+            <h1>Sign In</h1>
+          </header>
+          <div className="box">
+            <form onSubmit={loginUser}>
+              <span>Username: </span>
+              <input ref={usernameRef} type="text" />
+              <br />
+              <span>Password: </span>
+              <input ref={passwordRef} type="password" />
+              <br />
+              <button>Sign In</button>
+            </form>
+            <span className="noAccount">Don't have an account?</span>
+            <Link to="/signup">
+              <a>Sign Up</a>
+            </Link>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
