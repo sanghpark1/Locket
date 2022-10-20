@@ -11,6 +11,7 @@ const SearchEntry = () => {
     lastSentence: "",
     sentenceCache: "",
     totalJournals: [],
+    october: [],
     date: ''
   });
   const click = state.click;
@@ -21,10 +22,11 @@ const SearchEntry = () => {
   const sentenceCache = state.sentenceCache;
   const showLast = state.showLast;
   const totalJournals = state.totalJournals;
+  const october = state.october;
   const date = state.date;
 
-  useEffect(() => {
-    fetch('/entry/getEntries', {
+  useEffect( async () => {
+    try {fetch('/entry/getEntries', {
       method: "POST",
       headers: {
         "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiYWEiLCJpYXQiOjE2NjYyMzU5OTF9.Kodvbgfp8s7MxnzXs__rQwuKXpaepQuP1R_YjgE8sUE",
@@ -47,6 +49,46 @@ const SearchEntry = () => {
         }
       });
     })
+
+    const cacheOctober = [];
+    for (let i = 1; i <= 31; i++) {
+      let dateInput = '';
+      if (i < 10) {
+        dateInput = `0${i}`
+      } else {
+        dateInput = i;
+      }
+      await fetch('/entry/getSingle', {
+        method: "POST",
+        headers: {
+          "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiYWEiLCJpYXQiOjE2NjYyMzU5OTF9.Kodvbgfp8s7MxnzXs__rQwuKXpaepQuP1R_YjgE8sUE",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          username,
+          date: `10/${dateInput}/2022`
+        }),
+      })
+      .then(res => res.json())
+      .then(data => {
+        console.log(data);
+        if (data !== null) {
+          cacheOctober.push(<div className='yes'>{i}</div>);
+        } else {
+          cacheOctober.push(<div className='no'>{i}</div>);
+        }
+        setState((prevState) => {
+          return {
+            ...prevState,
+            october: october.concat(cacheOctober)
+          }
+        });
+      })
+    }} catch (err) {
+      console.log(err);
+    }
+    
+    // console.log('October: ', october);
   }, [])
 
   const viewSingle = (e) => {
@@ -187,7 +229,7 @@ const SearchEntry = () => {
       {state.click ? (
         <div className="searchEntry">
           <div className="left-side">
-            <Link to="/">
+            <Link to="/" reloadDocument>
               <button>Home</button>
             </Link>
             <button onClick={logOut}>Log Out</button>
@@ -240,12 +282,15 @@ const SearchEntry = () => {
             </Link>
           </div>
 
-          <div className="right-side"></div>
+          <div className="right-side">
+          <span className='tracker'>Tracker</span>
+            {october}
+          </div>
         </div>
       ) : (
         <div className="searchEntry">
           <div className="left-side">
-            <Link to="/">
+            <Link to="/" reloadDocument>
               <button>Home</button>
             </Link>
             <button onClick={logOut}>Log Out</button>
@@ -264,7 +309,10 @@ const SearchEntry = () => {
             </div>
           </div>
 
-          <div className="right-side"></div>
+          <div className="right-side">
+          <span className='tracker'>Tracker</span>
+            {october}
+          </div>
         </div>
       )}
     </div>

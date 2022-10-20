@@ -145,7 +145,33 @@ body {
 
     .right-side {
         justify-self: right;
-        width: 60%;
+        width: 20%;
+        padding: 20px;
+        font-size: 11px;
+
+        .tracker {
+            font-size: 10px;
+        }
+
+        .yes {
+            border: 1px solid rgb(164, 164, 163);
+            background-color: rgb(253, 246, 40);
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            margin: 2px;
+            color: rgb(42, 42, 42);
+        }
+    
+        .no {
+            border: 1px solid rgb(164, 164, 163);
+            background-color: rgb(240, 240, 240);
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            margin: 2px;
+            color: rgb(105, 105, 105);
+        }
     }
 
     .showLast {

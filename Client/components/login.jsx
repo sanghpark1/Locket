@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
 
 const Login = () => {
-  const [state, setState ] = useState({ username: '', log: false, content: '', incognito: false, showLast: false, lastSentence: '', sentenceCache: '', date: '', token: '' });
+  const [state, setState ] = useState({ username: '', log: false, content: '', incognito: false, showLast: false, lastSentence: '', sentenceCache: '', date: '', token: '', october: [] });
   const username = state.username;
   const loggedIn = state.log;
   const content = state.content
@@ -11,13 +11,14 @@ const Login = () => {
   const sentenceCache = state.sentenceCache;
   const showLast = state.showLast;
   const date = state.date;
+  const october = state.october;
 
   const usernameRef = useRef(null);
   const passwordRef = useRef(null);
 
-  useEffect(() => {
+  useEffect( async () => {
 
-    fetch("/user/checkLog")
+    try {fetch("/user/checkLog")
       .then((res) => res.json())
       .then((data) => {
         data === "success" ? checkLogSuccess() : null;
@@ -31,6 +32,46 @@ const Login = () => {
         date: date.toLocaleDateString()
       }
     })
+  
+    const cacheOctober = [];
+    for (let i = 1; i <= 31; i++) {
+      let dateInput = '';
+      if (i < 10) {
+        dateInput = `0${i}`
+      } else {
+        dateInput = i;
+      }
+      await fetch('/entry/getSingle', {
+        method: "POST",
+        headers: {
+          "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiYWEiLCJpYXQiOjE2NjYyMzU5OTF9.Kodvbgfp8s7MxnzXs__rQwuKXpaepQuP1R_YjgE8sUE",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          username,
+          date: `10/${dateInput}/2022`
+        }),
+      })
+      .then(res => res.json())
+      .then(data => {
+        console.log(data);
+        if (data !== null) {
+          cacheOctober.push(<div className='yes'>{i}</div>);
+        } else {
+          cacheOctober.push(<div className='no'>{i}</div>);
+        }
+        setState((prevState) => {
+          return {
+            ...prevState,
+            october: october.concat(cacheOctober)
+          }
+        });
+      })
+    }
+  
+  } catch (err) {
+      console.log(err);
+    }
   }, []);
 
   const checkLogSuccess = () => {
@@ -128,7 +169,7 @@ const Login = () => {
         })
         .catch((err) => console.log("Error in login.jsx journal entry submission", err));
     clearText();
-    alert('Submitted!')
+    alert('Submitted!');
   }
 
   const incognitoToggle = () => {
@@ -221,15 +262,18 @@ const Login = () => {
               )}
             </div>
             <div>
-              <button onClick={submitEntry}>Submit Today's Entry</button>
+              <Link to="/" reloadDocument><button onClick={submitEntry}>Submit Today's Entry</button></Link>
               <button onClick={clearText}>Clear Entry</button>
             </div>
-            <Link to="/searchEntry">
+            <Link to="/searchEntry" reloadDocument>
               <button>Search Other Entries</button>
             </Link>
           </div>
 
-          <div className="right-side"></div>
+          <div className="right-side">
+            <span className='tracker'>Tracker</span>
+            {october}
+          </div>
         </div>
       ) : (
         /* -----------------------!!! LOGIN PAGE !!!----------------------------------------------- */
