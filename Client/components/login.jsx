@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
 
 const Login = () => {
-  const [state, setState ] = useState({ username: '', log: false, content: '', incognito: false, showLast: false, lastSentence: '', sentenceCache: '', date: '1/1/2000' });
+  const [state, setState ] = useState({ username: '', log: false, content: '', incognito: false, showLast: false, lastSentence: '', sentenceCache: '', date: '', token: '' });
   const username = state.username;
   const loggedIn = state.log;
   const content = state.content
@@ -14,6 +14,32 @@ const Login = () => {
 
   const usernameRef = useRef(null);
   const passwordRef = useRef(null);
+
+  useEffect(() => {
+
+    fetch("/user/checkLog")
+      .then((res) => res.json())
+      .then((data) => {
+        data === "success" ? checkLogSuccess() : null;
+      })
+      .catch((err) => console.log("Error in login.jsx get request", err));
+
+    const date = new Date();
+    setState((prevState) => {
+      return {
+        ...prevState,
+        date: date.toLocaleDateString()
+      }
+    })
+  }, []);
+
+  const checkLogSuccess = () => {
+    setState(prevState => {
+      return {
+      ...prevState, 
+      log: true,
+    }})
+  }
 
   const loginUser = (e) => {
     e.preventDefault();
@@ -31,23 +57,23 @@ const Login = () => {
         return {
         ...prevState, 
         log: true,
-        username: data
+        username: data.username,
+        token: data.accessToken
       }})
     }
     
     if (username !== '' && password !== '') {
-      fetch("/user/login", { // input full URL: http://localhost:3000
+      fetch("/user/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body),
       })
         .then((res) => res.json())
         .then((data) => {
-          data ? loginSuccess(data) : null;
+          data.logAttempt === 'success' ? loginSuccess(data) : null;
         })
         .catch((err) => console.log("Error in login.jsx form submission", err));
     }
-    console.log('logged?', loggedIn);
     usernameRef.current.value = "";
     passwordRef.current.value = "";
   };
@@ -114,7 +140,9 @@ const Login = () => {
     setState(prevState => {
       return {
         ...prevState,
-        content: ''
+        content: '',
+        lastSentence: '',
+        sentenceCache: ''
       }
     })
   }
@@ -128,11 +156,30 @@ const Login = () => {
     })
   }
 
+  const logOut = () => {
+    fetch("/user/logOut")
+    .then((res) => res.json())
+    .then((data) => {
+      console.log(data);
+    })
+    .catch((err) => console.log("Error in login.jsx get request", err));
+
+  const date = new Date();
+  setState((prevState) => {
+    return {
+      ...prevState,
+      log: false
+    }
+  })
+  }
+
   return (
     <div>
       { loggedIn ?
       <div className="homepage">
-        <div className="left-side"></div>
+        <div className="left-side">
+          <button onClick={logOut}>Log Out</button>
+        </div>
 
         <div className="main">
           <header>
@@ -141,9 +188,10 @@ const Login = () => {
           <span>Incognito Mode: </span><input className='checkbox' type='checkbox' onChange={incognitoToggle} />
           <br />
           <span>Show Last Sentence: </span><input className='checkbox' type='checkbox' onChange={lastSentenceToggle} />
+          <br/>
           {
             state.showLast ?
-            <input type='text' value={lastSentence} />
+            <input type='text' className='showLast' value={lastSentence} />
             :
             null
           }
@@ -166,10 +214,13 @@ const Login = () => {
         <div className="right-side"></div>
       </div>
       :
+
+      /* -----------------------!!! LOGIN PAGE !!!----------------------------------------------- */
       <div className="login">
         <header>
           <h1>Log In</h1>
         </header>
+        <div className="box">
         <form onSubmit={loginUser}>
           <span>Username: </span>
           <input ref={usernameRef} type="text" />
@@ -179,9 +230,11 @@ const Login = () => {
           <br />
           <button>Sign In</button>
         </form>
+        <span>Don't have an account?</span>
         <Link to="/signup">
-          <button>I Want To Sign Up!</button>
+          <a>Sign Up</a>
         </Link>
+        </div>
       </div>
       } 
     </div>

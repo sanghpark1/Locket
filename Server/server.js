@@ -1,9 +1,10 @@
 const express = require('express');
+const cookieParser = require('cookie-parser');
 const app = express();
 const port = 3000;
 const userRouter = require('./routes/users');
 const entryRouter = require('./routes/entries')
-const User = require('./models/allModel');
+// const User = require('./models/allModel');
 
 /**
  * handle parsing request body
@@ -14,6 +15,8 @@ app.use(express.urlencoded({ extended: true }));
 // although, not really sure about the second line there, but def the first one
 
 // route handlers below:
+
+app.use(cookieParser());
 
 app.use("/user", userRouter);
 

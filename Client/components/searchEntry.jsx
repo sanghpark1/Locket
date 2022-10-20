@@ -4,13 +4,13 @@ import { Link } from "react-router-dom";
 const SearchEntry = () => {
   const [state, setState] = useState({
     click: false,
-    username: "aa",
+    username: "",
     content: "",
     incognito: false,
     showLast: false,
     lastSentence: "",
     sentenceCache: "",
-    totalJournals: [<input type='text' value='hi'/>],
+    totalJournals: [],
     date: ''
   });
   const click = state.click;
@@ -26,7 +26,10 @@ const SearchEntry = () => {
   useEffect(() => {
     fetch('/entry/getEntries', {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiYWEiLCJpYXQiOjE2NjYyMzU5OTF9.Kodvbgfp8s7MxnzXs__rQwuKXpaepQuP1R_YjgE8sUE",
+        "Content-Type": "application/json",
+      },
       body: JSON.stringify({
         username
       }),
@@ -162,15 +165,37 @@ const SearchEntry = () => {
     });
   };
 
+  const logOut = () => {
+    fetch("/user/logOut")
+    .then((res) => res.json())
+    .then((data) => {
+      console.log(data);
+    })
+    .catch((err) => console.log("Error in login.jsx get request", err));
+
+  const date = new Date();
+  setState((prevState) => {
+    return {
+      ...prevState,
+      log: false
+    }
+  })
+  }
+
   return (
     <div>
       {state.click ? (
         <div className="searchEntry">
-          <div className="left-side"></div>
+          <div className="left-side">
+            <Link to="/">
+              <button>Home</button>
+            </Link>
+            <button onClick={logOut}>Log Out</button>
+          </div>
 
           <div className="main">
             <header>
-              <h1>Write!</h1>
+              <h1>Edit!</h1>
             </header>
             <span>Incognito Mode: </span>
             <input
@@ -194,19 +219,35 @@ const SearchEntry = () => {
                 onChange={updateText}
               />
             ) : (
-              <input className="textbox" type="text" value={content} onChange={updateText} />
+              <input
+                className="textbox"
+                type="text"
+                value={content}
+                onChange={updateText}
+              />
             )}
             <div>
               <button onClick={updateEntry}>Update This Entry</button>
-              <button onClick={deleteEntry}>Delete Entry</button>
+              <Link to="/searchEntry" reloadDocument>
+                <button onClick={deleteEntry}>Delete Entry</button>
+              </Link>
             </div>
+            <br />
+            <Link to="/searchEntry" reloadDocument>
+              <button>Search Other Entries</button>
+            </Link>
           </div>
 
           <div className="right-side"></div>
         </div>
       ) : (
         <div className="searchEntry">
-          <div className="left-side"></div>
+          <div className="left-side">
+            <Link to="/">
+              <button>Home</button>
+            </Link>
+            <button onClick={logOut}>Log Out</button>
+          </div>
 
           <div className="main">
             <header>
@@ -215,9 +256,9 @@ const SearchEntry = () => {
             <div>
               <h1>Pick A Date!</h1>
               <select onChange={viewSingle} className="dropbox">
-                <option value=''>Select</option>
+                <option value="">Select</option>
                 {totalJournals}
-                </select>
+              </select>
             </div>
           </div>
 

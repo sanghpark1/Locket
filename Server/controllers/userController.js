@@ -1,14 +1,20 @@
+require('dotenv').config();
 const models = require('../models/allModel');
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+
 const userController = {};
 
 userController.getUser = (req, res, next) => {
     const { username } = req.body;
-    models.User.findOne({ username }, (err, user) => {
+    models.User.findOne({ username }, 'username password', (err, user) => {
         if (err) return next({log: 'error in GET request'})
         if (!user) {
             res.locals.getUser = null;
         } else {
             res.locals.getUser = user.username;
+            res.locals.getPassword = user.password;
+            console.log('user: ', user);
         }
         return next();
     })
@@ -16,7 +22,8 @@ userController.getUser = (req, res, next) => {
 
 userController.createUser = (req, res, next) => {
     if (res.locals.getUser === null) {
-        const { username, password, name } = req.body;
+        const { username, name } = req.body;
+        const { hashedPw: password } = res.locals;
         models.User.create({ username, name, password }, (err, user) => {
         res.locals.createUser = user;
         return next();
@@ -27,19 +34,69 @@ userController.createUser = (req, res, next) => {
     }
 }
 
-userController.loginUser = (req, res, next) => {
-    const { username, password } = req.body;
 
-    models.User.findOne({ username, password }, (err, user) => {
-        if (err) return next({log: 'error in GET request'})
-        if (!user) {
-            res.locals.getUser = false;
+userController.bcryptPassword = async (req, res, next) => {
+    try {
+        const salt = await bcrypt.genSalt(12);
+        const hashed = await bcrypt.hash(req.body.password, salt);
+        res.locals.hashedPw = hashed;
+        return next();
+    } catch (err) {
+        return next({ log: error in bcrypt, err })
+    }
+}
+
+userController.loginUser = async (req, res, next) => {
+    try {
+       
+        if (await bcrypt.compare(req.body.password, res.locals.getPassword)) {
+            const user = { username: req.body.username };
+            console.log('user:', user);
+            const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET);
+            res.locals.yayOrNay = { logAttempt: 'success', username: res.locals.getUser};
+            console.log('accessToken', accessToken);
+            res.cookie('ssid', accessToken, {
+                httpOnly: true
+            });
+            res.cookie('username', req.body.username, {
+                httpOnly: true
+            });
         } else {
-            console.log(user);
-            res.locals.getUser = username;
+            res.locals.yayOrNay = false;
         }
         return next();
-    })
+    } catch (err) {
+        return next({ log: 'error in bcrypt', err })
+    }
+}
+
+userController.checklog = async (req, res, next) => {
+    const token = req.cookies.ssid;
+    if (token == null) {
+        res.locals.checkLog = false;
+        return next();
+    };
+
+    try {
+        jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
+            if (err) return next({ log: 'Error in checkLog jwt verification' });
+            res.locals.checkLog = 'success';
+            return next();
+        });
+    } catch (err) {
+        return next({ log: 'error in checkLog' });
+    }
+}
+
+userController.logOut = (req, res, next) => {
+    res.cookie('ssid', 'NoThankYou', {
+        httpOnly: true
+    });
+    res.cookie('username', 'NoThankYou', {
+        httpOnly: true
+    });
+    res.locals.logOut = 'Logged Out Successfully';
+    return next();
 }
 
 module.exports = userController;

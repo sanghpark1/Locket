@@ -13,15 +13,23 @@ body {
     justify-content: center;
     text-align: center;
 
+
+    .box {
+            background-color: white;
+            border: 1px solid black;
+            display: grid;
+            justify-content: center;
+        }
+
     form {
         margin-top: 20%;
-        border: 1px solid blue;
 
         input {
             margin: 1px 5px;
             display: grid;
             grid-template-rows: 1fr 1fr;
             justify-content: right;
+            text-align: center;
         }
 
         button {
@@ -83,6 +91,11 @@ body {
         width: 60%;
     }
 
+    .showLast {
+        width: 80%;
+        text-align: center;
+    }
+
     .main {
         // border: 1px solid red;
         // display: grid;
@@ -90,7 +103,6 @@ body {
         // align-items: center;
         header {
             padding: 100px 50px 80px 50px;
-            border: 1px solid red;
         }
         .textbox { // gotta fix the adjustability of the box; readjusts to anysize
             margin: 20px;
