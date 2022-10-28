@@ -23,21 +23,6 @@ app.use("/user", userRouter);
 app.use("/entry", entryRouter);
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 // catch all
 app.use((req, res) => res.status(404).send('This page does not exist.'));
 

@@ -2,23 +2,27 @@ import React, { useEffect, useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
 
 const Login = () => {
-  const [state, setState ] = useState({ username: '', log: false, content: '', incognito: false, showLast: false, lastSentence: '', sentenceCache: '', date: '', token: '', october: [] });
-  const username = state.username;
-  const loggedIn = state.log;
-  const content = state.content
-  const incognito = state.incognito;
-  const lastSentence = state.lastSentence;
-  const sentenceCache = state.sentenceCache;
-  const showLast = state.showLast;
-  const date = state.date;
-  const october = state.october;
+  const [state, setState] = useState({
+    username: "",
+    loggedIn: false,
+    content: "",
+    incognito: false,
+    showLast: false,
+    lastSentence: "",
+    sentenceCache: "",
+    date: "",
+    token: "",
+    october: [],
+  });
+  const { username, loggedIn, content, incognito, lastSentence, sentenceCache, showLast, date, october } = state;
 
   const usernameRef = useRef(null);
   const passwordRef = useRef(null);
 
   useEffect( async () => {
 
-    try {fetch("/user/checkLog")
+    try {
+      fetch("/user/checkLog")
       .then((res) => res.json())
       .then((data) => {
         data === "success" ? checkLogSuccess() : null;
@@ -44,7 +48,6 @@ const Login = () => {
       await fetch('/entry/getSingle', {
         method: "POST",
         headers: {
-          "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiYWEiLCJpYXQiOjE2NjYyMzU5OTF9.Kodvbgfp8s7MxnzXs__rQwuKXpaepQuP1R_YjgE8sUE",
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
@@ -78,7 +81,7 @@ const Login = () => {
     setState(prevState => {
       return {
       ...prevState, 
-      log: true,
+      loggedIn: true,
     }})
   }
 
@@ -97,7 +100,7 @@ const Login = () => {
       setState(prevState => {
         return {
         ...prevState, 
-        log: true,
+        loggedIn: true,
         username: data.username,
         token: data.accessToken
       }})
@@ -215,7 +218,7 @@ const Login = () => {
   setState((prevState) => {
     return {
       ...prevState,
-      log: false
+      loggedIn: false
     }
   })
   }
