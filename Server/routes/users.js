@@ -2,12 +2,12 @@ const express = require('express');
 const router = express.Router();
 const userController = require('../controllers/userController');
 
-router.get('/checkLog', userController.checklog, (req, res) => {
-    return res.status(200).json(res.locals.checkLog);
+router.get('/checkLogStatus', userController.checkLogStatus, (req, res) => {
+    return res.status(200).json(res.locals.checkLogStatus);
 })
 
 router.get('/logOut', userController.logOut, (req, res) => {
-    return res.status(200).json(res.locals.logOut);
+    return res.status(200).json(res.locals.loggedOutAttempt);
 })
 
 router.post('/signup', userController.bcryptPassword, userController.getUser, userController.createUser, (req, res) => {

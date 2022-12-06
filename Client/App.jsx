@@ -4,14 +4,15 @@ import "./App.scss";
 import Signup from './components/signup';
 import Login from './components/login';
 import SearchEntry from './components/searchEntry';
+import Homepage from './components/Homepage';
 
 
 const App = () => {
-
   return (
     <div>
       <Routes>
         <Route path="/" element={<Login />} />
+        <Route path="/homepage" element={<Homepage />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/searchEntry" element={<SearchEntry />} />
       </Routes>

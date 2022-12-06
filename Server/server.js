@@ -1,6 +1,7 @@
 const express = require('express');
 const cookieParser = require('cookie-parser');
 const app = express();
+const path = require('path');
 const port = 3000;
 const userRouter = require('./routes/users');
 const entryRouter = require('./routes/entries')
@@ -19,11 +20,17 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 app.use("/user", userRouter);
-
 app.use("/entry", entryRouter);
 
+// if ('NODE_ENV=production') {
+  app.use(express.static(path.join(__dirname, 'dist')));
 
-// catch all
+  app.get('/*', function (req, res) {
+    res.sendFile(path.join(__dirname, 'dist', 'index.html'))
+})
+// }
+
+// catch-all error handler
 app.use((req, res) => res.status(404).send('This page does not exist.'));
 
 // global error handler

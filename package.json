@@ -4,10 +4,11 @@
   "description": "",
   "main": "/client/index.js",
   "scripts": {
-    "start": "concurrently \"webpack-dev-server --hot --open\" \"nodemon ./server/server.js\"",
+    "start": "node ./server/server.js --mode production",
     "build": "webpack --config webpack.config.js --mode production",
-    "dev": "nodemon server/server.js"
+    "dev": "concurrently \"webpack-dev-server --hot --open\" \"nodemon ./server/server.js\""
   },
+
   "keywords": [],
   "author": "",
   "license": "ISC",

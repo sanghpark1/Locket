@@ -5,6 +5,24 @@ const jwt = require('jsonwebtoken');
 
 const userController = {};
 
+userController.checkLogStatus = async (req, res, next) => {
+    const token = req.cookies.ssid;
+    if (token == null) {
+        res.locals.checkLogStatus = false;
+        return next();
+    };
+
+    try {
+        jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
+            if (err) return next({ log: 'Error in checkLog jwt verification' });
+            res.locals.checkLogStatus = 'success';
+            return next();
+        });
+    } catch (err) {
+        return next({ log: 'error in checkLog', message: 'user not signed in' });
+    }
+}
+
 userController.getUser = (req, res, next) => {
     const { username } = req.body;
     models.User.findOne({ username }, 'username password', (err, user) => {
@@ -74,24 +92,6 @@ userController.loginUser = async (req, res, next) => {
     }
 }
 
-userController.checklog = async (req, res, next) => {
-    const token = req.cookies.ssid;
-    if (token == null) {
-        res.locals.checkLog = false;
-        return next();
-    };
-
-    try {
-        jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
-            if (err) return next({ log: 'Error in checkLog jwt verification' });
-            res.locals.checkLog = 'success';
-            return next();
-        });
-    } catch (err) {
-        return next({ log: 'error in checkLog' });
-    }
-}
-
 userController.logOut = (req, res, next) => {
     res.cookie('ssid', 'NoThankYou', {
         httpOnly: true
@@ -99,7 +99,7 @@ userController.logOut = (req, res, next) => {
     res.cookie('username', 'NoThankYou', {
         httpOnly: true
     });
-    res.locals.logOut = 'Logged Out Successfully';
+    res.locals.loggedOutAttempt = 'Logged Out Successfully';
     return next();
 }
 
