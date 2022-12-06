@@ -97,13 +97,18 @@ userController.loginUser = async (req, res, next) => {
   }
 };
 
+// delete cookies
 userController.logOut = (req, res, next) => {
-  res.cookie('ssid', 'Invalid', {
-    httpOnly: true,
-  });
-  res.cookie('username', 'Invalid', {
-    httpOnly: true,
-  });
+    res.cookie('ssid', 'Invalid', {
+        httpOnly: true,
+        secure: true,
+        maxAge: 0,
+      });
+      res.cookie('username', 'Invalid', {
+        httpOnly: true,
+        secure: true,
+        maxAge: 0,
+      });
   res.locals.loggedOutAttempt = 'Logged Out Successfully';
   return next();
 };
