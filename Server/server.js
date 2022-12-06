@@ -2,33 +2,26 @@ const express = require('express');
 const cookieParser = require('cookie-parser');
 const app = express();
 const path = require('path');
-const port = 3000;
 const userRouter = require('./routes/users');
 const entryRouter = require('./routes/entries')
-// const User = require('./models/allModel');
+const port = 3000;
 
-/**
- * handle parsing request body
- */
+// parse request body
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-// above is necessary or req.body will come back undefined
-// although, not really sure about the second line there, but def the first one
-
-// route handlers below:
-
+// parse cookies
 app.use(cookieParser());
 
+// route handlers:
 app.use("/user", userRouter);
 app.use("/entry", entryRouter);
 
-// if ('NODE_ENV=production') {
-  app.use(express.static(path.join(__dirname, 'dist')));
+app.use(express.static(path.join(__dirname, 'dist')));
 
-  app.get('/*', function (req, res) {
-    res.sendFile(path.join(__dirname, 'dist', 'index.html'))
-})
-// }
+app.get('/*', function (req, res) {
+res.sendFile(path.join(__dirname, 'dist', 'index.html'));
+});
+
 
 // catch-all error handler
 app.use((req, res) => res.status(404).send('This page does not exist.'));

@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const entryController = require('../controllers/entryController');
 
-router.get('/getEntries', entryController.authenticateToken, entryController.getEntries, (req, res) => {
+router.get('/getEntries', entryController.getEntries, (req, res) => {
     return res.status(200).json(res.locals.getEntries);
 })
 
@@ -14,11 +14,11 @@ router.post('/new', entryController.getSingle, entryController.createNew, (req, 
     return res.status(200).json(res.locals.createEntry);
 })
 
-router.post('/update', entryController.authenticateToken, entryController.updateSingle, (req, res) => {
+router.post('/update', entryController.updateSingle, (req, res) => {
     return res.status(200).json(res.locals.updateSingle);
 })
 
-router.post('/delete', entryController.authenticateToken, entryController.deleteSingle, (req, res) => {
+router.post('/delete', entryController.deleteSingle, (req, res) => {
     return res.status(200).json(res.locals.deleteSingle);
 })
 

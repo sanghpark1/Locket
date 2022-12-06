@@ -39,7 +39,7 @@ entryController.createNew = (req, res, next) => {
 };
 
 entryController.updateSingle = (req, res, next) => {
-  const { username } = req.user;
+  const { username } = req.cookies;
   const { date, content } = req.body;
   // console.log(username, date, content);
   models.Entry.findOneAndUpdate(
@@ -54,29 +54,13 @@ entryController.updateSingle = (req, res, next) => {
 };
 
 entryController.deleteSingle = (req, res, next) => {
-  const { username } = req.user;
+  const { username } = req.cookies;
   const { date } = req.body;
-  // console.log(username, date);
   models.Entry.findOneAndDelete({ username, date }, (err, deletedSingle) => {
     if (err) return next({ log: err });
     res.locals.deleteSingle = deletedSingle;
     return next();
   });
-};
-
-entryController.authenticateToken = async (req, res, next) => {
-  const token = req.cookies.ssid;
-  if (token == null) return res.sendStatus(404);
-
-  try {
-    jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
-      if (err) return next({ log: 'Error in jwt verification' });
-      res.locals.user = user;
-      return next();
-    });
-  } catch (err) {
-    return next({ log: 'error in authenticateToken' });
-  }
 };
 
 module.exports = entryController;

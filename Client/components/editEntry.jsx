@@ -1,24 +1,33 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import months from './months';
 
-const Homepage = () => {
+const EditEntry = (props) => {
   const [state, setState] = useState({
     loggedIn: false,
+    click: false,
     incognito: false,
     showLast: false,
-    date: new Date().toLocaleDateString(),
+    totalJournals: [],
     monthCheck: [],
+    content: '',
   });
-  const { loggedIn, incognito, showLast, date, monthCheck } = state;
+  const {
+    loggedIn,
+    incognito,
+    showLast,
+    monthCheck,
+    content,
+  } = state;
+  const { date, setDate } = props;
   const navigate = useNavigate();
-  const currentEntry = useRef(null);
+  const editContent = useRef(null);
   const lastSentence = useRef(null);
 
   useEffect(() => {
     const checkLogStatus = async () => {
       try {
-        const checkLogStatus = await fetch("/user/checkLogStatus");
+        const checkLogStatus = await fetch('/user/checkLogStatus');
         const parsedCheckLogStatus = await checkLogStatus.json();
         if (parsedCheckLogStatus === 'success') {
           setState((prevState) => {
@@ -27,17 +36,23 @@ const Homepage = () => {
               loggedIn: true,
             };
           });
-        };
+        }
       } catch (err) {
         console.log(err);
       }
-    }
+    };
     checkLogStatus();
+
+    setState(prevState => ({
+        ...prevState,
+        content: fetchSingle(),
+      }))
   }, []);
 
   useEffect(() => {
-    const retrieveRecord = async () => {
-      try {
+    try {
+      const retrieveRecord = async () => {
+        try {
           const currMonth = new Date().getMonth();
           const cacheMonth = [];
           for (let i = 1; i <= months.numDays[currMonth]; i++) {
@@ -54,9 +69,13 @@ const Homepage = () => {
 
             cacheMonth.push(
               parsedCheckDate !== null ? (
-                <div key={`${currMonth}/${i}`} className='yes'>{i}</div>
+                <div key={`${currMonth}/${i}`} className='yes'>
+                  {i}
+                </div>
               ) : (
-                <div key={`${currMonth}/${i}`} className='no'>{i}</div>
+                <div key={`${currMonth}/${i}`} className='no'>
+                  {i}
+                </div>
               )
             );
           }
@@ -66,29 +85,15 @@ const Homepage = () => {
               monthCheck: cacheMonth,
             };
           });
-      } catch (err) {
-        console.log(err);
-      }
-    };
-    retrieveRecord();
-  }, [loggedIn]);
-
-  const submitEntry = async (e) => {
-    try {
-      const createEntry = await fetch('/entry/new/', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          content: currentEntry.current.value,
-          date,
-        }),
-      })
-      const parsedCreateEntry = await createEntry.json();
-      alert(parsedCreateEntry);
+        } catch (err) {
+          console.log(err);
+        }
+      };
+      retrieveRecord();
     } catch (err) {
       console.log(err);
     }
-  }
+  }, [loggedIn]);
 
   const incognitoToggle = () => {
     setState(prevState => {
@@ -108,19 +113,50 @@ const Homepage = () => {
     })
   }
 
+  const updateEntry = async () => {
+    try {
+      const updateEntryPost = await fetch('/entry/update/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          date,
+          content: editContent.current.value,
+        }),
+      });
+      navigate('/searchEntry');
+    } catch (err) {
+      console.log('Update Entry was not successful; ', err);
+    }
+  };
+
+  const deleteEntry = async () => {
+    try {
+      const deleteEntryPost = await fetch('/entry/delete/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          date,
+        }),
+      });
+      navigate('/searchEntry');
+    } catch (err) {
+      console.log('Delete Entry was not successful; ', err);
+    }
+  };
+
   const logOut = async () => {
-    const logOutAttempt = await fetch("/user/logOut");
+    const logOutAttempt = await fetch('/user/logOut');
     const parsedLogOutAttempt = await logOutAttempt.json();
     console.log('parsedLogOutAttempt: ', parsedLogOutAttempt);
     if (parsedLogOutAttempt !== 'Logged Out Successfully') return;
     setState((prevState) => {
-        return {
+      return {
         ...prevState,
-        loggedIn: false
-        }
-    })
+        loggedIn: false,
+      };
+    });
     navigate('/');
-  }
+  };
 
   const currentSentence = (currValue) => {
     if (!currValue) return '';
@@ -154,81 +190,118 @@ const Homepage = () => {
     }
   }
 
+  function fetchSingle() {
+    try {
+      fetch('/entry/getSingle', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          date,
+        }),
+      })
+      .then(data => data.json())
+      .then(data => editContent.current.value = data.content);
+    } catch (err) {
+      console.log('Show Single Based On Date was unsuccessful; ', err);
+    }
+  };
+
   return (
     <>
-        {loggedIn ? (<div className="homepage">
-          <div className="left-side">
+      {loggedIn ? (
+        <div className='searchEntry'>
+          <div className='left-side'>
+            <button onClick={() => navigate('/homepage')}>Home</button>
             <button onClick={logOut}>Log Out</button>
           </div>
 
-          <div className="main">
+          <div className='main'>
             <header>
-              <h1>Write!</h1>
+              <h1>Edit!</h1>
             </header>
-            <div className="main-box">
+            <div className='main-box'>
               <span className='font-light-gray'>Incognito Mode: </span>
               <input
-                className="checkbox"
-                type="checkbox"
+                className='checkbox'
+                type='checkbox'
                 onChange={incognitoToggle}
               />
               <br />
               <span className='font-light-gray'>Show Last Sentence: </span>
               <input
-                className="checkbox"
-                type="checkbox"
+                className='checkbox'
+                type='checkbox'
                 onChange={lastSentenceToggle}
               />
-              <br />
-              {state.showLast ? (
+              {showLast ? (
                 <input type="text" className="showLast" ref={lastSentence} />
               ) : (
                 <input type="text" style={{display: 'none'}} className="showLast" ref={lastSentence} />
               )}
               <br />
-              {state.incognito ? (
+              {!incognito ? (
                 <input
                   className="textbox"
-                  ref={currentEntry}
+                  ref={editContent}
                   onKeyDown={(e) => {
                     if (e.key === '.' ||
                      e.key === '!' ||
                      e.key === '?' ||
-                     e.key === ';') currentSentence(currentEntry.current.value + e.key);
+                     e.key === ';') currentSentence(editContent.current.value + e.key);
                   }}
-                  type="password"
+                  onChange={() => {
+                    setState(prevState => ({
+                      ...prevState,
+                      content: editContent.current.value,
+                    }))
+                  }}
+                  defaultValue={content}
+                  type="text"
                 />
               ) : (
                 <input 
                   className="textbox" 
-                  ref={currentEntry} 
+                  ref={editContent} 
                   onKeyDown={(e) => {
                     if (e.key === '.' ||
                      e.key === '!' ||
                      e.key === '?' ||
-                     e.key === ';') currentSentence(currentEntry.current.value + e.key);
-
+                     e.key === ';') currentSentence(editContent.current.value + e.key);
                   }}
-                  type="text" 
+                  onChange={() => {
+                    setState(prevState => ({
+                      ...prevState,
+                      content: editContent.current.value,
+                    }))
+                  }}
+                  defaultValue={content}
+                  type="password" 
                  />
               )}
             </div>
             <div>
-              <button onClick={submitEntry}>Submit Today's Entry</button>
-              <button onClick={() => currentEntry.current.value = ''}>Clear Entry</button>
+              <button onClick={updateEntry}>Update This Entry</button>
+              <button
+                onClick={() => {
+                  deleteEntry();
+                  navigate('/searchEntry');
+                }}
+              >
+                Delete Entry
+              </button>
             </div>
+            <br />
               <button onClick={() => navigate('/searchEntry')}>Search Other Entries</button>
           </div>
 
-          <div className="right-side">
-            <span className='tracker'>{months.getMonth[new Date().getMonth()]}<br/> Tracker</span>
+          <div className='right-side'>
+            <span className='tracker'>Tracker</span>
             {monthCheck}
           </div>
-        </div>) 
-        : 
-        (<h1>You must be logged in to view this page.</h1>)}
+        </div>
+      ) : null}
     </>
   );
-}
+};
 
-export default Homepage;
+export default EditEntry;
