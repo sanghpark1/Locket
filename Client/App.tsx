@@ -1,4 +1,4 @@
-import React, { useState } from 'react'; // need to import react on every component that we create
+import { useState } from 'react'; // need to import react on every component that we create
 import { Route, Routes } from 'react-router-dom';
 import "./App.scss";
 import Signup from './components/signup';

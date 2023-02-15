@@ -1,5 +1,5 @@
-import React, { useEffect, useState, useRef } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useEffect, useState, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import months from './months';
 
 const EditEntry = (props) => {
@@ -19,7 +19,7 @@ const EditEntry = (props) => {
     monthCheck,
     content,
   } = state;
-  const { date, setDate } = props;
+  const { date } = props;
   const navigate = useNavigate();
   const editContent = useRef(null);
   const lastSentence = useRef(null);
@@ -43,6 +43,7 @@ const EditEntry = (props) => {
     };
     checkLogStatus();
 
+    // @ts-ignore
     setState(prevState => ({
         ...prevState,
         content: fetchSingle(),
@@ -115,7 +116,7 @@ const EditEntry = (props) => {
 
   const updateEntry = async () => {
     try {
-      const updateEntryPost = await fetch('/entry/update/', {
+      await fetch('/entry/update/', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -131,7 +132,7 @@ const EditEntry = (props) => {
 
   const deleteEntry = async () => {
     try {
-      const deleteEntryPost = await fetch('/entry/delete/', {
+      await fetch('/entry/delete/', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -158,7 +159,7 @@ const EditEntry = (props) => {
     navigate('/');
   };
 
-  const currentSentence = (currValue) => {
+  const currentSentence = (currValue): void | string => {
     if (!currValue) return '';
     const entryValue = currValue.split('').reverse();
     let count = 0;

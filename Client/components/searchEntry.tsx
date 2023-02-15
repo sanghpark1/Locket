@@ -1,5 +1,5 @@
-import React, { useEffect, useState, useRef } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import months from './months';
 
 const SearchEntry = (props) => {
@@ -13,7 +13,7 @@ const SearchEntry = (props) => {
     totalJournals,
     monthCheck,
   } = state;
-  const { date, setDate } = props;
+  const { setDate } = props;
   const navigate = useNavigate();
 
   useEffect(() => {

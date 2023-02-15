@@ -1,10 +1,11 @@
-import React, { useEffect, useState, useRef } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useEffect, useState, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
   const [state, setState] = useState({
     loggedIn: false,
   });
+  // @ts-ignore
   const { loggedIn } = state;
   const navigate = useNavigate();
   const usernameRef = useRef(null), passwordRef = useRef(null);

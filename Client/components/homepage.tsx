@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import months from './months';
 
@@ -73,7 +73,7 @@ const Homepage = () => {
     retrieveRecord();
   }, [loggedIn]);
 
-  const submitEntry = async (e) => {
+  const submitEntry = async () => {
     try {
       const createEntry = await fetch('/entry/new/', {
         method: 'POST',
@@ -122,7 +122,7 @@ const Homepage = () => {
     navigate('/');
   }
 
-  const currentSentence = (currValue) => {
+  const currentSentence = (currValue): void | string => {
     if (!currValue) return '';
     const entryValue = currValue.split('').reverse();
     let count = 0;
