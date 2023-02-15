@@ -39,7 +39,7 @@ const Homepage = () => {
     const retrieveRecord = async () => {
       try {
           const currMonth = new Date().getMonth();
-          const cacheMonth = [];
+          const cacheMonth: JSX.Element[] = [];
           for (let i = 1; i <= months.numDays[currMonth]; i++) {
             const checkDate = await fetch('/entry/getSingle', {
               method: 'POST',

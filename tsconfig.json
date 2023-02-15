@@ -1,0 +1,30 @@
+{
+    "compilerOptions": {
+        "target": "ES2022",
+        // "allowJs": true,
+        "checkJs": true,
+        "esModuleInterop": true,
+        // "skipLibCheck": true,
+        // "allowSyntheticDefaultImports": true,
+        "declaration": true,
+        // "strict": true,
+        "forceConsistentCasingInFileNames": true,
+        "noFallthroughCasesInSwitch": true,
+        "module": "CommonJS",
+        "moduleResolution": "node",
+        "resolveJsonModule": true,
+        "isolatedModules": true,
+        // "noEmit": true,
+        "jsx": "react-jsx",
+        "outDir": "./dist/",
+        "rootDir": "Client",
+        "noUnusedLocals": true,
+        "noUnusedParameters": true,
+        "noImplicitReturns": true,
+        // "stripInternal": true,
+        // "types": [],
+    },
+    "include": [
+        "Client/**/*"
+    ]
+}

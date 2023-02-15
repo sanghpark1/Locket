@@ -4,8 +4,8 @@ import "./App.scss";
 import Signup from './components/signup';
 import Login from './components/login';
 import SearchEntry from './components/searchEntry';
-import EditEntry from './components/EditEntry';
-import Homepage from './components/Homepage';
+import EditEntry from './components/editEntry';
+import Homepage from './components/homepage';
 
 
 const App = () => {
